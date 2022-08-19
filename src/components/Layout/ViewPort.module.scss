@@ -1,0 +1,88 @@
+.ViewPort {
+  position: absolute;
+  width: 360px;
+  padding: 10px;
+  top: 10px;
+  &_canvas {
+    width: 100%;
+    // border: solid 1px wheat;
+    border-radius: 50px;
+  }
+  height: auto;
+}
+
+.IphoneWrapper {
+  position: relative;
+  display: flex;
+  margin: 30px;
+  margin-top: 0;
+  width: 360px;
+  &_iphone {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+  }
+  &_overlay {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+  }
+  & {
+    @media screen and (max-width: 666px) {
+      margin: 0 auto;
+    }
+  }
+}
+.loadingContainer {
+  position: absolute;
+  padding-top: 230px;
+  border-radius: 50px;
+  // opacity: 50%;
+  background-color: rgba(128, 128, 128, 0.5);
+  // background-color: rgb(128, 128, 128);
+  height: 717px;
+  // right: 200px;
+  z-index: 999;
+  width: 100%;
+  .lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid rgba(255, 255, 255, 1);
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: rgba(255, 255, 255, 1) transparent transparent transparent;
+  }
+  .lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+  .lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  .lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+@media screen and (max-width: 666px) {
+  .ViewPort_IphoneWrapper {
+    margin: 0 auto;
+  }
+}
