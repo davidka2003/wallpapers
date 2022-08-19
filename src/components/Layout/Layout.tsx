@@ -1,10 +1,10 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import saveAs from "file-saver";
+import React, { useEffect, useRef, useState } from "react";
 import useWindowDimensions from "../../hooks/WindowDimensions";
 import RangeInput from "../inputs/input.range";
 import styles from "./Layout.module.scss";
 import MyViewPort from "./MyViewPort";
-import ViewPort from "./ViewPort";
 type traitT = "BACKGROUND" | "FUR" | "EYES" | "CLOTHING" | "NECKLACE" | "HAIR" | "MOUTH";
 type backgroundT =
   | "Pumpkin"
@@ -36,6 +36,8 @@ type responseT = {
   }[];
 };
 const Layout = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const { width, height } = useWindowDimensions();
   const [caption, setCaption] = useState("");
   const [captionColor, setCaptionColor] = useState("#ffffff");
@@ -60,6 +62,7 @@ const Layout = () => {
           const data = response.data as responseT;
           const image = new Image();
           image.src = data.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+          image.crossOrigin = "anonymus";
           await new Promise((resolve) => {
             image.onload = () => resolve(null);
           });
@@ -87,13 +90,18 @@ const Layout = () => {
           }
         }
       });
-
     return () => {
       canceled = true;
       setFetchedData((state) => (state ? { ...state, error: "Failed to fetch ipfs", loading: false } : null));
       source.cancel("Request canceled");
     };
   }, [tokenId]);
+  const saveHandler = async () => {
+    fetchedData &&
+      canvasRef.current?.toBlob((blob) => {
+        blob && saveAs(blob, `DAW_Wallpaper#${fetchedData.tokenId}.png`);
+      });
+  };
 
   return (
     <div className={styles.Layout}>
@@ -179,7 +187,9 @@ const Layout = () => {
                   )}
                 </div>
                 <div className={styles.form_layout_option}>
-                  <button>SAVE</button>
+                  <button type={"button"} disabled={!fetchedData && !!canvasRef.current} onClick={saveHandler}>
+                    SAVE
+                  </button>
                 </div>
                 <div>
                   <input
@@ -201,6 +211,7 @@ const Layout = () => {
               vertical={1 - vertical / 100}
               scale={scale / 100}
               preview={preview}
+              canvasRef={canvasRef}
             />
             {/* {fetchedData?.loading && (
               <div className={styles.loadingContainer}>

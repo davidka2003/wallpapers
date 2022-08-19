@@ -3,6 +3,7 @@ import iphone from "../../assets/iphone.png";
 import overlay from "../../assets/screen.png";
 import { CanvasWrapText } from "../../utils/text.utils";
 import { fetchedDataT } from "./Layout";
+import { saveAs } from "file-saver";
 import styles from "./ViewPort.module.scss";
 const BACKGROUNDS = {
   Pumpkin: "#d69444", //4
@@ -24,6 +25,7 @@ const MyViewPort = ({
   vertical,
   scale,
   preview,
+  canvasRef,
 }: {
   text: string;
   textColor: string;
@@ -32,8 +34,9 @@ const MyViewPort = ({
   vertical: number;
   scale: number;
   preview: boolean;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  // const canvasRef = useRef<HTMLCanvasElement>(null);
   //   const [text, setText] = useState("asassad sadsdanjkasndkjdasn kas djkasjnassdaknsak sadjnsajknsjanjsaddd");
   useEffect(() => {
     const init = async () => {
@@ -42,6 +45,7 @@ const MyViewPort = ({
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d")!;
         const iphoneImage = new Image();
+        iphoneImage.setAttribute("crossorigin", "anonymous");
         iphoneImage.src = iphone;
         await new Promise((resolve) => {
           iphoneImage.onload = () => resolve(null);
@@ -81,7 +85,6 @@ const MyViewPort = ({
           canvas.width * 0.9,
           fontSize + fontSize * 0.2
         );
-        // console.log(canvas.toDataURL());
       }
     };
     // };
