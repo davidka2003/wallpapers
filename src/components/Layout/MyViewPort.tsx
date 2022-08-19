@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import iphone from "../../assets/iphone.png";
 import overlay from "../../assets/screen.png";
 import { CanvasWrapText } from "../../utils/text.utils";
-import { fetchedDataT } from "./Layout";
+import { fetchedDataT, logoT } from "./Layout";
 import { saveAs } from "file-saver";
 import styles from "./ViewPort.module.scss";
 const BACKGROUNDS = {
@@ -22,19 +22,25 @@ const MyViewPort = ({
   textColor,
   showLockScreenOverlay,
   data,
-  vertical,
+  logoVertical,
   scale,
   preview,
   canvasRef,
+  logo,
+  scaleLogo,
+  logoText,
 }: {
   text: string;
   textColor: string;
   showLockScreenOverlay: boolean;
   data: fetchedDataT;
-  vertical: number;
+  logoVertical: number;
   scale: number;
   preview: boolean;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  logo: HTMLImageElement | null;
+  scaleLogo: number;
+  logoText: logoT;
 }) => {
   // const canvasRef = useRef<HTMLCanvasElement>(null);
   //   const [text, setText] = useState("asassad sadsdanjkasndkjdasn kas djkasjnassdaknsak sadjnsajknsjanjsaddd");
@@ -50,32 +56,46 @@ const MyViewPort = ({
         await new Promise((resolve) => {
           iphoneImage.onload = () => resolve(null);
         });
-        console.log(iphoneImage.width, iphoneImage.height);
+        // console.log(iphoneImage.width, iphoneImage.height);
         const fontSize = 90;
         canvas.width = iphoneImage.width;
         canvas.height = iphoneImage.height;
         ctx.font = `${fontSize}px ${"Kanit, sans-serif"}`;
         // ctx.fillStyle = textColor;
         ctx.textAlign = "center";
-        if (data) {
+        if (data.data) {
           ctx.beginPath();
           ctx.rect(0, 0, canvas.width, canvas.height);
           //@ts-ignore
-          ctx.fillStyle = BACKGROUNDS[data.background];
-          console.log(BACKGROUNDS[data.background]);
+          ctx.fillStyle = BACKGROUNDS[data.data.background];
+          // console.log(BACKGROUNDS[data.data.background]);
           ctx.fill();
           // ctx.fillStyle = textColor;
 
           // ctx.fillText(text, iphoneImage.width / 2, iphoneImage.height / 2);
           //   const scale = 0.5;
-          const { image } = data;
+          const { image } = data.data;
           const width = canvas.width * scale;
           const height = image.height * (canvas.width / image.width) * scale;
           const x = (canvas.width - width) / 2;
           //   console.log(vertical);
-          const y = vertical * (canvas.height - height);
+          const y = 1 /* logoVertical */ * (canvas.height - height);
           ctx.drawImage(image, x, y, width, height);
         }
+        if (logo) {
+          // debugger;
+          const image = logo;
+          console.log(logoText);
+
+          // console.log(image);
+          // console.log(scaleLogo);
+          const width = canvas.width * scaleLogo;
+          const height = image.height * (canvas.width / image.width) * scaleLogo;
+          const x = (canvas.width - width) / 2;
+          const y = logoVertical * (canvas.height - height);
+          ctx.drawImage(image, x, y, width, height);
+        }
+        //no need
         ctx.fillStyle = textColor;
         CanvasWrapText(
           ctx,
@@ -89,7 +109,8 @@ const MyViewPort = ({
     };
     // };
     init();
-  }, [canvasRef, text, textColor, data, scale, vertical]);
+  }, [canvasRef, text, textColor, data.data, scale, logoVertical, logo, scaleLogo]);
+  // console.log("loading,", data.loading);
   return (
     <div className={styles.IphoneWrapper}>
       {!preview && <img className={styles.IphoneWrapper_iphone} src={iphone} />}
@@ -101,7 +122,7 @@ const MyViewPort = ({
           ref={canvasRef}
         ></canvas>
       </div>
-      {data?.loading && (
+      {data.loading && (
         <div className={styles.loadingContainer}>
           <div className={styles["lds-ring"]}>
             <div></div>

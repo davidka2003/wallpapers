@@ -5,7 +5,10 @@ import useWindowDimensions from "../../hooks/WindowDimensions";
 import RangeInput from "../inputs/input.range";
 import styles from "./Layout.module.scss";
 import MyViewPort from "./MyViewPort";
+import logoBlack from "../../assets/logo-black.png";
+import logoWhite from "../../assets/logo-white.png";
 type traitT = "BACKGROUND" | "FUR" | "EYES" | "CLOTHING" | "NECKLACE" | "HAIR" | "MOUTH";
+export type logoT = "null" | "logo-white" | "logo-black";
 type backgroundT =
   | "Pumpkin"
   | "Mint"
@@ -18,14 +21,17 @@ type backgroundT =
   | "Mustard"
   | "Eggplant";
 export type fetchedDataT = {
-  background: backgroundT;
-  url: string;
-  src?: string;
-  tokenId: number;
-  error?: string;
+  data?: {
+    background: backgroundT;
+    url: string;
+    src?: string;
+    tokenId: number;
+    error?: string;
+    // loading: boolean;
+    image: HTMLImageElement;
+  };
   loading: boolean;
-  image: HTMLImageElement;
-} | null;
+};
 type responseT = {
   description: string;
   image: string;
@@ -42,18 +48,46 @@ const Layout = () => {
   const [caption, setCaption] = useState("");
   const [captionColor, setCaptionColor] = useState("#ffffff");
   const [showLockscreenOverlay, setShowLockscreenOverlay] = useState(true);
-  const [fetchedData, setFetchedData] = useState<fetchedDataT>(null);
+  const [fetchedData, setFetchedData] = useState<fetchedDataT>({ loading: true });
   const [tokenId, setTokenId] = useState(1);
-  const [vertical, setVertical] = useState(100);
-  const [scale, setScale] = useState(100);
+  const [logoVertical, setLogoVertical] = useState(60);
+  const [scaleDAW, setScaleDAW] = useState(100);
+  const [scaleLogoDAW, setScaleLogoDAW] = useState(50);
+  const [logo, setLogo] = useState<logoT>("logo-black");
+  const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
   const [preview, setPreview] = useState(false);
-  console.log(scale);
+  console.log(logo);
+  useEffect(() => {
+    const init = async () => {
+      if (logo === "null") {
+        console.log("setting logo to null");
+        setLogoImage(null);
+        return setLogo("null");
+      }
+      const image = new Image();
+      setFetchedData((state) => (state ? { ...state, loading: true } : { loading: true }));
+      switch (logo) {
+        case "logo-black":
+          image.src = logoBlack;
+          break;
+        case "logo-white":
+          image.src = logoWhite;
+          break;
+        default:
+          break;
+      }
+      await new Promise((resolve) => (image.onload = () => resolve(null)));
+      setFetchedData((state) => (state ? { ...state, loading: false } : { loading: false }));
+      setLogoImage(image);
+    };
+    init();
+  }, [logo]);
   useEffect(() => {
     let canceled = false;
     const token = tokenId == 0 ? 1 : tokenId;
     const source = axios.CancelToken.source();
     console.log("fetching");
-    setFetchedData((state) => (state ? { ...state, error: undefined, loading: true } : null));
+    setFetchedData((state) => (state ? { ...state, error: undefined, loading: true } : { loading: true }));
     axios(`https://ipfs.io/ipfs/QmSnQ4CKfkmUx9bs8yTymmU1nDBkboCWCV2LN33UdDR2XT/${token}`, {
       cancelToken: source.token,
     })
@@ -69,12 +103,15 @@ const Layout = () => {
           if (!canceled) {
             console.log(data.attributes.filter((e) => e.trait_type == "BACKGROUND")[0].value);
             setFetchedData({
-              url: data.image,
-              background: data.attributes.filter((e) => e.trait_type == "BACKGROUND")[0].value,
-              tokenId: token,
+              data: {
+                url: data.image,
+                background: data.attributes.filter((e) => e.trait_type == "BACKGROUND")[0].value,
+                tokenId: token,
+                // loading: false,
+                error: undefined,
+                image,
+              },
               loading: false,
-              error: undefined,
-              image,
             });
           }
         }
@@ -82,24 +119,28 @@ const Layout = () => {
       .catch((e) => {
         if (!canceled) {
           if (axios.isCancel(e)) {
-            console.log("Request canceled 19");
-            setFetchedData((state) => (state ? { ...state, error: undefined, loading: false } : null));
+            // console.log("Request canceled 19");
+            setFetchedData((state) => (state ? { ...state, error: undefined, loading: false } : { loading: false }));
             return; //fetchedData;
           } else {
-            setFetchedData((state) => (state ? { ...state, error: "Failed to fetch ipfs", loading: false } : null));
+            setFetchedData((state) =>
+              state ? { ...state, error: "Failed to fetch ipfs", loading: false } : { loading: false }
+            );
           }
         }
       });
     return () => {
       canceled = true;
-      setFetchedData((state) => (state ? { ...state, error: "Failed to fetch ipfs", loading: false } : null));
+      setFetchedData((state) =>
+        state ? { ...state, error: "Failed to fetch ipfs", loading: false } : { loading: false }
+      );
       source.cancel("Request canceled");
     };
   }, [tokenId]);
   const saveHandler = async () => {
-    fetchedData &&
+    fetchedData.data &&
       canvasRef.current?.toBlob((blob) => {
-        blob && saveAs(blob, `DAW_Wallpaper#${fetchedData.tokenId}.png`);
+        blob && saveAs(blob, `DAW_Wallpaper#${fetchedData.data!.tokenId}.png`);
       });
   };
 
@@ -123,16 +164,51 @@ const Layout = () => {
                     }}
                   />
                 </div>
-                {/* <div className={styles.form_layout_option}>
-                  <p>Logo overlay</p>
-                  <select>
-                    <option value="a">none</option>
-                    <option value="a">none</option>
-                    <option value="a">None</option>
-                    <option value="a">zalupa</option>
-                  </select>
-                </div> */}
                 <div className={styles.form_layout_option}>
+                  <p className={styles["form_layout_scale-text"]}>Image size</p>
+                  <div className={styles.form_layout_scale}>
+                    <p>100%</p>
+                    <RangeInput
+                      min={100}
+                      max={150}
+                      value={scaleDAW}
+                      onChange={({ target }) => setScaleDAW(+target.value)}
+                    />
+                    <p>150%</p>
+                  </div>
+                </div>
+                <div className={styles.form_layout_option}>
+                  <p>Logo overlay</p>
+                  <select
+                    disabled={fetchedData.loading}
+                    value={logo}
+                    onChange={async ({ target: { value } }) => {
+                      console.log("setted,", value);
+                      setLogo(value as logoT);
+                    }}
+                  >
+                    <option value={"null" as logoT}>None</option>
+                    <option value={"logo-white" as logoT}>White logo</option>
+                    <option value={"logo-black" as logoT}>Black logo</option>
+                  </select>
+                </div>
+                <div
+                  className={styles.form_layout_option}
+                  style={{ visibility: logo === "null" ? "hidden" : "visible" }}
+                >
+                  <p className={styles["form_layout_scale-text"]}>Logo size</p>
+                  <div className={styles.form_layout_scale}>
+                    <p>50%</p>
+                    <RangeInput
+                      min={50}
+                      max={150}
+                      value={scaleLogoDAW}
+                      onChange={({ target }) => setScaleLogoDAW(+target.value)}
+                    />
+                    <p>150%</p>
+                  </div>
+                </div>
+                {/* <div className={styles.form_layout_option}>
                   <p>Custom caption</p>
                   <div className={styles.form_layout_custom}>
                     <input
@@ -142,63 +218,58 @@ const Layout = () => {
                     />
                     <input type="color" value={captionColor} onChange={({ target }) => setCaptionColor(target.value)} />
                   </div>
-                </div>
-                <div className={styles.form_layout_option}>
-                  <p className={styles["form_layout_scale-text"]}>Image size</p>
-                  <div className={styles.form_layout_scale}>
-                    <RangeInput min={30} max={100} value={scale} onChange={({ target }) => setScale(+target.value)} />
-                    {/* <input type="range" /> */}
-                  </div>
-                </div>
-                {width <= 666 && (
+                </div> */}
+                {
                   <div className={styles.form_layout_option}>
-                    <p className={styles["form_layout_scale-text"]}>Image vertical position</p>
+                    <p className={styles["form_layout_scale-text"]}>Logo vertical position</p>
                     <div className={styles.form_layout_scale}>
+                      <p>down</p>
                       <RangeInput
                         min={0}
                         max={100}
-                        value={vertical}
-                        onChange={({ target }) => setVertical(+target.value)}
+                        value={logoVertical}
+                        onChange={({ target }) => setLogoVertical(+target.value)}
                       />
+                      <p>top</p>
                     </div>
                   </div>
-                )}
+                }
                 <div className={styles.form_layout_option}>
-                  {!preview ? (
-                    <button
-                      type={"button"}
-                      onClick={({ preventDefault }) => {
-                        // preventDefault();
-                        setPreview(true);
-                      }}
-                    >
-                      PREVIEW
+                  <div className={styles.btnControlUnion}>
+                    {!preview ? (
+                      <button
+                        type={"button"}
+                        onClick={({ preventDefault }) => {
+                          // preventDefault();
+                          setPreview(true);
+                        }}
+                      >
+                        PREVIEW
+                      </button>
+                    ) : (
+                      <button
+                        type={"button"}
+                        onClick={({ preventDefault }) => {
+                          // preventDefault();
+                          setPreview(false);
+                        }}
+                      >
+                        VIEW
+                      </button>
+                    )}
+                    <button type={"button"} disabled={!fetchedData && !!canvasRef.current} onClick={saveHandler}>
+                      SAVE
                     </button>
-                  ) : (
-                    <button
-                      type={"button"}
-                      onClick={({ preventDefault }) => {
-                        // preventDefault();
-                        setPreview(false);
-                      }}
-                    >
-                      HIDE PREVIEW
-                    </button>
-                  )}
+                  </div>
                 </div>
-                <div className={styles.form_layout_option}>
-                  <button type={"button"} disabled={!fetchedData && !!canvasRef.current} onClick={saveHandler}>
-                    SAVE
-                  </button>
-                </div>
-                <div>
+                {/* <div>
                   <input
                     type="checkbox"
                     checked={!preview && showLockscreenOverlay}
                     onChange={({ target }) => setShowLockscreenOverlay(target.checked)}
                   />
                   <span>Show lockscreen overlay</span>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>
@@ -208,10 +279,13 @@ const Layout = () => {
               textColor={captionColor}
               showLockScreenOverlay={showLockscreenOverlay}
               data={fetchedData}
-              vertical={1 - vertical / 100}
-              scale={scale / 100}
+              logoVertical={1 - logoVertical / 100}
+              scale={scaleDAW / 100}
+              logo={logoImage}
+              scaleLogo={scaleLogoDAW / 100}
               preview={preview}
               canvasRef={canvasRef}
+              logoText={logo}
             />
             {/* {fetchedData?.loading && (
               <div className={styles.loadingContainer}>
@@ -223,7 +297,7 @@ const Layout = () => {
                 </div>
               </div>
             )} */}
-            {width > 666 && (
+            {/* {width > 666 && (
               <div className={styles.box_right_verticalWrapper}>
                 <RangeInput
                   orient={"vertical"}
@@ -233,7 +307,7 @@ const Layout = () => {
                   onChange={({ target }) => setVertical(+target.value)}
                 />
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

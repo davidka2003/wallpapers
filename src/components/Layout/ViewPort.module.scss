@@ -1,23 +1,15 @@
-.ViewPort {
-  position: absolute;
-  width: 360px;
-  padding: 10px;
-  top: 10px;
-  &_canvas {
-    width: 100%;
-    // border: solid 1px wheat;
-    border-radius: 50px;
-  }
-  height: auto;
-}
-
+//vars
+$wrapperWidth: 250px;
+$borderRadius: 40px;
+$wrapperHeigth: 500px;
+//main wrapper
 .IphoneWrapper {
   position: relative;
   height: max-content;
   display: flex;
-  margin: 30px;
+  // margin: 30px;
   margin-top: 0;
-  width: 360px;
+  width: $wrapperWidth;
   &_iphone {
     position: absolute;
     width: 100%;
@@ -34,14 +26,28 @@
     }
   }
 }
+.ViewPort {
+  position: absolute;
+  width: $wrapperWidth;
+  padding: 5px;
+  top: 10px;
+  &_canvas {
+    width: 100%;
+    height: 100%;
+    // border: solid 1px wheat;
+    border-radius: $borderRadius;
+  }
+  height: auto;
+}
+
 .loadingContainer {
   position: absolute;
   padding-top: 230px;
-  border-radius: 50px;
+  border-radius: $borderRadius;
   // opacity: 50%;
   background-color: rgba(128, 128, 128, 0.5);
   // background-color: rgb(128, 128, 128);
-  height: 717px;
+  height: $wrapperHeigth;
   // right: 200px;
   z-index: 999;
   width: 100%;
