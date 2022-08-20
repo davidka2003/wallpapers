@@ -57,11 +57,9 @@ const Layout = () => {
   const [logo, setLogo] = useState<logoT>("logo-black");
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
   const [preview, setPreview] = useState(false);
-  console.log(logo);
   useEffect(() => {
     const init = async () => {
       if (logo === "null") {
-        console.log("setting logo to null");
         setLogoImage(null);
         return setLogo("null");
       }
@@ -87,7 +85,6 @@ const Layout = () => {
     let canceled = false;
     const token = tokenId == 0 ? 1 : tokenId;
     const source = axios.CancelToken.source();
-    console.log("fetching");
     setFetchedData((state) => (state ? { ...state, error: undefined, loading: true } : { loading: true }));
     axios(`https://ipfs.io/ipfs/QmSnQ4CKfkmUx9bs8yTymmU1nDBkboCWCV2LN33UdDR2XT/${token}`, {
       cancelToken: source.token,
@@ -102,7 +99,6 @@ const Layout = () => {
             image.onload = () => resolve(null);
           });
           if (!canceled) {
-            console.log(data.attributes.filter((e) => e.trait_type == "BACKGROUND")[0].value);
             setFetchedData({
               data: {
                 url: data.image,
@@ -157,10 +153,11 @@ const Layout = () => {
                   type="number"
                   max={10000}
                   min={1}
-                  value={tokenId}
+                  value={tokenId.toString()}
                   placeholder="DAW token number"
                   onChange={({ target }) => {
-                    +target.value <= 10000 && setTokenId(+target.value);
+                    const value = +target.value;
+                    value <= 10000 && setTokenId(value);
                   }}
                 />
               </div>
@@ -180,7 +177,6 @@ const Layout = () => {
                   disabled={fetchedData.loading}
                   value={logo}
                   onChange={async ({ target: { value } }) => {
-                    console.log("setted,", value);
                     setLogo(value as logoT);
                   }}
                 >

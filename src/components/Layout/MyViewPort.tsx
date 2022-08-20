@@ -85,7 +85,7 @@ const MyViewPort = ({
         if (logo) {
           // debugger;
           const image = logo;
-          console.log(logoText);
+          // console.log(logoText);
 
           // console.log(image);
           // console.log(scaleLogo);
