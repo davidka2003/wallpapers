@@ -1,4 +1,6 @@
 .RangeInput {
+  // height: 40px;
+  // padding: 1px;
   -webkit-appearance: none;
   // margin: 10px 0;
   width: 100%;
@@ -15,6 +17,11 @@
   background: rgb(72, 72, 72);
   border-radius: 25px;
   border: 0px solid #000101;
+  & {
+    @media screen and(max-width: 788px) {
+      height: 10px;
+    }
+  }
 }
 .RangeInput::-webkit-slider-thumb {
   box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
@@ -26,6 +33,13 @@
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -4.6px; //-3.6
+  & {
+    @media screen and(max-width: 788px) {
+      margin-top: -10px !important;
+      height: 30px;
+      width: 30px;
+    }
+  }
 }
 .RangeInput:focus::-webkit-slider-runnable-track {
   background: rgb(72, 72, 72);
