@@ -53,7 +53,7 @@ const Layout = () => {
   const [tokenId, setTokenId] = useState(1);
   const [logoVertical, setLogoVertical] = useState(60);
   const [scaleDAW, setScaleDAW] = useState(100);
-  const [scaleLogoDAW, setScaleLogoDAW] = useState(50);
+  const [scaleLogoDAW, setScaleLogoDAW] = useState(35);
   const [logo, setLogo] = useState<logoT>("logo-black");
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
   const [preview, setPreview] = useState(false);
@@ -191,7 +191,7 @@ const Layout = () => {
               >
                 <div className={styles.form_layout_optionRange_description}>Logo size:</div>
                 <RangeInput
-                  min={50}
+                  min={35}
                   max={150}
                   value={scaleLogoDAW}
                   onChange={({ target }) => setScaleLogoDAW(+target.value)}
