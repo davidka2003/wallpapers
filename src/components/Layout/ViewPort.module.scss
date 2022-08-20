@@ -1,27 +1,26 @@
 //vars
-$wrapperWidth: 250px;
+$wrapperWidth: 225.7px;
 $borderRadius: 40px;
-$wrapperHeigth: 500px;
+$wrapperHeigth: 450px;
 //main wrapper
 .IphoneWrapper {
-  position: relative;
-  height: max-content;
+  height: $wrapperHeigth;
   display: flex;
-  // margin: 30px;
+  margin: 0 auto;
   margin-top: 0;
   width: $wrapperWidth;
   &_iphone {
     position: absolute;
-    width: 100%;
+    height: $wrapperHeigth;
     z-index: 2;
   }
   &_overlay {
     position: absolute;
     z-index: 1;
-    width: 100%;
+    height: $wrapperHeigth;
   }
   & {
-    @media screen and (max-width: 666px) {
+    @media screen and (max-width: 788px) {
       margin: 0 auto;
     }
   }
@@ -29,20 +28,27 @@ $wrapperHeigth: 500px;
 .ViewPort {
   position: absolute;
   width: $wrapperWidth;
+  height: $wrapperHeigth;
   padding: 5px;
-  top: 10px;
+  // top: 10px;
   &_canvas {
     width: 100%;
     height: 100%;
     // border: solid 1px wheat;
     border-radius: $borderRadius;
   }
-  height: auto;
+  &_canvas-preview {
+    width: 100%;
+    height: 100%;
+    // border: solid 1px wheat;
+    border-radius: 0;
+  }
+  // height: auto;
 }
 
 .loadingContainer {
   position: absolute;
-  padding-top: 230px;
+  // padding-top: 230px;
   border-radius: $borderRadius;
   // opacity: 50%;
   background-color: rgba(128, 128, 128, 0.5);
@@ -50,10 +56,11 @@ $wrapperHeigth: 500px;
   height: $wrapperHeigth;
   // right: 200px;
   z-index: 999;
-  width: 100%;
+  width: $wrapperWidth;
   .lds-ring {
-    display: inline-block;
     position: relative;
+    margin: 0 auto;
+    top: 140px;
     width: 80px;
     height: 80px;
   }
@@ -88,7 +95,7 @@ $wrapperHeigth: 500px;
   }
 }
 
-@media screen and (max-width: 666px) {
+@media screen and (max-width: 788px) {
   .ViewPort_IphoneWrapper {
     margin: 0 auto;
   }

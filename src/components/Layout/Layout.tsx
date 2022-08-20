@@ -7,6 +7,7 @@ import styles from "./Layout.module.scss";
 import MyViewPort from "./MyViewPort";
 import logoBlack from "../../assets/logo-black.png";
 import logoWhite from "../../assets/logo-white.png";
+import Iphone from "./Iphone";
 type traitT = "BACKGROUND" | "FUR" | "EYES" | "CLOTHING" | "NECKLACE" | "HAIR" | "MOUTH";
 export type logoT = "null" | "logo-white" | "logo-black";
 type backgroundT =
@@ -146,123 +147,102 @@ const Layout = () => {
 
   return (
     <div className={styles.Layout}>
-      <div className={styles.Layout_container}>
-        <div className={styles.box}>
-          <div className={styles.box_left}>
-            <div className={styles.form_container}>
-              <form className={styles.form_layout} onSubmit={({ preventDefault }) => preventDefault()}>
-                <div className={styles.form_layout_option}>
-                  <p>DAW token number</p>
-                  <input
-                    type="number"
-                    max={10000}
-                    min={1}
-                    value={tokenId}
-                    placeholder="DAW token number"
-                    onChange={({ target }) => {
-                      +target.value <= 10000 && setTokenId(+target.value);
-                    }}
-                  />
-                </div>
-                <div className={styles.form_layout_option}>
-                  <p className={styles["form_layout_scale-text"]}>Image size</p>
-                  <div className={styles.form_layout_scale}>
-                    <p>100%</p>
-                    <RangeInput
-                      min={100}
-                      max={150}
-                      value={scaleDAW}
-                      onChange={({ target }) => setScaleDAW(+target.value)}
-                    />
-                    <p>150%</p>
-                  </div>
-                </div>
-                <div className={styles.form_layout_option}>
-                  <p>Logo overlay</p>
-                  <select
-                    disabled={fetchedData.loading}
-                    value={logo}
-                    onChange={async ({ target: { value } }) => {
-                      console.log("setted,", value);
-                      setLogo(value as logoT);
-                    }}
-                  >
-                    <option value={"null" as logoT}>None</option>
-                    <option value={"logo-white" as logoT}>White logo</option>
-                    <option value={"logo-black" as logoT}>Black logo</option>
-                  </select>
-                </div>
-                <div
-                  className={styles.form_layout_option}
-                  style={{ visibility: logo === "null" ? "hidden" : "visible" }}
+      <div className={styles.box}>
+        <div className={styles.box_left}>
+          <div className={styles.form_container}>
+            <form className={styles.form_layout} onSubmit={({ preventDefault }) => preventDefault()}>
+              <div className={styles.form_layout_optionBasic}>
+                <p>DAW token number</p>
+                <input
+                  type="number"
+                  max={10000}
+                  min={1}
+                  value={tokenId}
+                  placeholder="DAW token number"
+                  onChange={({ target }) => {
+                    +target.value <= 10000 && setTokenId(+target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_layout_optionRange}>
+                <div className={styles.form_layout_optionRange_description}>Image size:</div>
+                <RangeInput
+                  min={100}
+                  max={150}
+                  value={scaleDAW}
+                  onChange={({ target }) => setScaleDAW(+target.value)}
+                />
+                <div className={styles.form_layout_optionRange_scale}>{scaleDAW}%</div>
+              </div>
+              <div className={styles.form_layout_optionBasic}>
+                <p>Logo overlay</p>
+                <select
+                  disabled={fetchedData.loading}
+                  value={logo}
+                  onChange={async ({ target: { value } }) => {
+                    console.log("setted,", value);
+                    setLogo(value as logoT);
+                  }}
                 >
-                  <p className={styles["form_layout_scale-text"]}>Logo size</p>
-                  <div className={styles.form_layout_scale}>
-                    <p>50%</p>
-                    <RangeInput
-                      min={50}
-                      max={150}
-                      value={scaleLogoDAW}
-                      onChange={({ target }) => setScaleLogoDAW(+target.value)}
-                    />
-                    <p>150%</p>
-                  </div>
-                </div>
-                {/* <div className={styles.form_layout_option}>
-                  <p>Custom caption</p>
-                  <div className={styles.form_layout_custom}>
-                    <input
-                      type="text"
-                      placeholder={"Twitter handle / Discord nickname / etc."}
-                      onChange={({ target }) => setCaption(target.value)}
-                    />
-                    <input type="color" value={captionColor} onChange={({ target }) => setCaptionColor(target.value)} />
-                  </div>
-                </div> */}
-                {
-                  <div className={styles.form_layout_option}>
-                    <p className={styles["form_layout_scale-text"]}>Logo vertical position</p>
-                    <div className={styles.form_layout_scale}>
-                      <p>down</p>
-                      <RangeInput
-                        min={0}
-                        max={100}
-                        value={logoVertical}
-                        onChange={({ target }) => setLogoVertical(+target.value)}
-                      />
-                      <p>top</p>
-                    </div>
-                  </div>
-                }
-                <div className={styles.form_layout_option}>
-                  <div className={styles.btnControlUnion}>
-                    {!preview ? (
-                      <button
-                        type={"button"}
-                        onClick={({ preventDefault }) => {
-                          // preventDefault();
-                          setPreview(true);
-                        }}
-                      >
-                        PREVIEW
-                      </button>
-                    ) : (
-                      <button
-                        type={"button"}
-                        onClick={({ preventDefault }) => {
-                          // preventDefault();
-                          setPreview(false);
-                        }}
-                      >
-                        VIEW
-                      </button>
-                    )}
-                    <button type={"button"} disabled={!fetchedData && !!canvasRef.current} onClick={saveHandler}>
-                      SAVE
+                  <option value={"null" as logoT}>None</option>
+                  <option value={"logo-white" as logoT}>White logo</option>
+                  <option value={"logo-black" as logoT}>Black logo</option>
+                </select>
+              </div>
+              <div
+                className={styles.form_layout_optionRange}
+                style={{ visibility: logo === "null" ? "hidden" : "visible" }}
+              >
+                <div className={styles.form_layout_optionRange_description}>Logo size:</div>
+                <RangeInput
+                  min={50}
+                  max={150}
+                  value={scaleLogoDAW}
+                  onChange={({ target }) => setScaleLogoDAW(+target.value)}
+                />
+                <div className={styles.form_layout_optionRange_scale}>{scaleLogoDAW}%</div>
+              </div>
+
+              <div className={styles.form_layout_optionRange}>
+                <div className={styles.form_layout_optionRange_description}>Logo vertical:</div>
+                <RangeInput
+                  min={0}
+                  max={100}
+                  value={logoVertical}
+                  onChange={({ target }) => setLogoVertical(+target.value)}
+                />
+                <div className={styles.form_layout_optionRange_scale}>{logoVertical}%</div>
+              </div>
+
+              <div>
+                <div className={styles.btnControlUnion}>
+                  {!preview ? (
+                    <button
+                      type={"button"}
+                      onClick={({ preventDefault }) => {
+                        // preventDefault();
+                        setPreview(true);
+                      }}
+                    >
+                      PREVIEW
                     </button>
-                  </div>
+                  ) : (
+                    <button
+                      type={"button"}
+                      onClick={({ preventDefault }) => {
+                        // preventDefault();
+                        setPreview(false);
+                      }}
+                    >
+                      VIEW
+                    </button>
+                  )}
+                  <button type={"button"} disabled={!fetchedData && !!canvasRef.current} onClick={saveHandler}>
+                    SAVE
+                  </button>
                 </div>
-                {/* <div>
+              </div>
+              {/* <div>
                   <input
                     type="checkbox"
                     checked={!preview && showLockscreenOverlay}
@@ -270,45 +250,47 @@ const Layout = () => {
                   />
                   <span>Show lockscreen overlay</span>
                 </div> */}
-              </form>
-            </div>
+            </form>
           </div>
-          <div className={styles.box_right}>
-            <MyViewPort
-              text={caption}
-              textColor={captionColor}
-              showLockScreenOverlay={showLockscreenOverlay}
-              data={fetchedData}
-              logoVertical={1 - logoVertical / 100}
-              scale={scaleDAW / 100}
-              logo={logoImage}
-              scaleLogo={scaleLogoDAW / 100}
-              preview={preview}
-              canvasRef={canvasRef}
-              logoText={logo}
-            />
-            {/* {fetchedData?.loading && (
-              <div className={styles.loadingContainer}>
-                <div className={styles["lds-ring"]}>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-            )} */}
-            {/* {width > 666 && (
-              <div className={styles.box_right_verticalWrapper}>
-                <RangeInput
-                  orient={"vertical"}
-                  min={0}
-                  max={100}
-                  value={vertical}
-                  onChange={({ target }) => setVertical(+target.value)}
-                />
-              </div>
-            )} */}
-          </div>
+        </div>
+        <div className={styles.box_right}>
+          {/* <Iphone /> */}
+          {/* <div className={styles.previewButton}>
+            {!preview ? (
+              <button
+                type={"button"}
+                onClick={({ preventDefault }) => {
+                  // preventDefault();
+                  setPreview(true);
+                }}
+              >
+                PREVIEW
+              </button>
+            ) : (
+              <button
+                type={"button"}
+                onClick={({ preventDefault }) => {
+                  // preventDefault();
+                  setPreview(false);
+                }}
+              >
+                HIDE PREVIEW
+              </button>
+            )}
+          </div> */}
+          <MyViewPort
+            text={caption}
+            textColor={captionColor}
+            showLockScreenOverlay={showLockscreenOverlay}
+            data={fetchedData}
+            logoVertical={1 - logoVertical / 100}
+            scale={scaleDAW / 100}
+            logo={logoImage}
+            scaleLogo={scaleLogoDAW / 100}
+            preview={preview}
+            canvasRef={canvasRef}
+            logoText={logo}
+          />
         </div>
       </div>
     </div>

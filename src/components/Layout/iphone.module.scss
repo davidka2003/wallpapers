@@ -1,0 +1,16 @@
+.wrapper {
+  height: 500px;
+  width: fit-content;
+  overflow-y: hidden;
+  img:nth-child(1) {
+    position: relative;
+    height: 500px;
+    //   width: 250px;
+  }
+  img:nth-child(2) {
+    position: relative;
+    height: 500px;
+    //   width: 250px;
+    top: -500px;
+  }
+}

@@ -9,26 +9,26 @@
 }
 .RangeInput::-webkit-slider-runnable-track {
   width: 100%;
-  height: 12.8px;
+  height: 3px;
   cursor: pointer;
   box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  background: #ededed;
+  background: rgb(72, 72, 72);
   border-radius: 25px;
   border: 0px solid #000101;
 }
 .RangeInput::-webkit-slider-thumb {
   box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
   border: 0px solid #000000;
-  height: 25px;
-  width: 39px;
-  border-radius: 10px;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -4.6px; //-3.6
 }
 .RangeInput:focus::-webkit-slider-runnable-track {
-  background: #ededed;
+  background: rgb(72, 72, 72);
 }
 .RangeInput::-moz-range-track {
   width: 100%;
@@ -36,7 +36,7 @@
   cursor: pointer;
   animate: 0.2s;
   box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
-  background: #ededed;
+  background: rgb(72, 72, 72);
   border-radius: 25px;
   border: 0px solid #000101;
 }
@@ -60,13 +60,13 @@
   color: transparent;
 }
 .RangeInput::-ms-fill-lower {
-  background: #ededed;
+  background: rgb(72, 72, 72);
   border: 0px solid #000101;
   border-radius: 50px;
   box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
 }
 .RangeInput::-ms-fill-upper {
-  background: #ededed;
+  background: rgb(72, 72, 72);
   border: 0px solid #000101;
   border-radius: 50px;
   box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
@@ -81,8 +81,8 @@
   cursor: pointer;
 }
 .RangeInput:focus::-ms-fill-lower {
-  background: #ededed;
+  background: rgb(72, 72, 72);
 }
 .RangeInput:focus::-ms-fill-upper {
-  background: #ededed;
+  background: rgb(72, 72, 72);
 }

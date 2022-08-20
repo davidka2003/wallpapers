@@ -117,7 +117,7 @@ const MyViewPort = ({
       {!preview && showLockScreenOverlay && <img className={styles.IphoneWrapper_iphone} src={overlay} />}
       <div className={styles.ViewPort}>
         <canvas
-          className={styles.ViewPort_canvas}
+          className={styles[!preview ? "ViewPort_canvas" : "ViewPort_canvas-preview"]}
           // style={{ width: 400, height: "auto", border: "solid 1px white", background: `url("../../assets/iphone.png")` }}
           ref={canvasRef}
         ></canvas>
